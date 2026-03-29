@@ -14,7 +14,183 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      audit_events: {
+        Row: {
+          actor: string
+          created_at: string
+          event_type: string
+          id: string
+          metadata: string | null
+          request_id: string | null
+        }
+        Insert: {
+          actor: string
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: string | null
+          request_id?: string | null
+        }
+        Update: {
+          actor?: string
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: string | null
+          request_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_events_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      feedback: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          rating: number
+          request_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          rating: number
+          request_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          rating?: number
+          request_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      requests: {
+        Row: {
+          created_at: string
+          error: string | null
+          id: string
+          input: string
+          locale: string
+          mode: string
+          pillar: string | null
+          provider: string | null
+          response: string | null
+          session_id: string | null
+          status: Database["public"]["Enums"]["request_status"]
+          sub: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          input: string
+          locale?: string
+          mode: string
+          pillar?: string | null
+          provider?: string | null
+          response?: string | null
+          session_id?: string | null
+          status?: Database["public"]["Enums"]["request_status"]
+          sub?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          input?: string
+          locale?: string
+          mode?: string
+          pillar?: string | null
+          provider?: string | null
+          response?: string | null
+          session_id?: string | null
+          status?: Database["public"]["Enums"]["request_status"]
+          sub?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "requests_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sessions: {
+        Row: {
+          created_at: string
+          device_id: string
+          id: string
+          last_seen_at: string
+          locale: string
+        }
+        Insert: {
+          created_at?: string
+          device_id: string
+          id?: string
+          last_seen_at?: string
+          locale?: string
+        }
+        Update: {
+          created_at?: string
+          device_id?: string
+          id?: string
+          last_seen_at?: string
+          locale?: string
+        }
+        Relationships: []
+      }
+      taleem_resources: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          pillar: string
+          tags: string[]
+          title: string
+          url: string | null
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          pillar: string
+          tags?: string[]
+          title: string
+          url?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          pillar?: string
+          tags?: string[]
+          title?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +199,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      request_status: "queued" | "completed" | "error"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +326,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      request_status: ["queued", "completed", "error"],
+    },
   },
 } as const

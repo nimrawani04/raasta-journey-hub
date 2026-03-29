@@ -31,7 +31,7 @@ function createSpeechRecognition(lang: string) {
 }
 
 export function HomeHeroMic() {
-  const { locale, t } = useI18n()
+  const { locale } = useI18n()
   const [state, setState] = useState<'idle' | 'listening' | 'thinking' | 'speaking'>('idle')
   const [answer, setAnswer] = useState('')
   const [error, setError] = useState('')
@@ -82,7 +82,7 @@ export function HomeHeroMic() {
       setError('Microphone access denied.')
       setState('idle')
     }
-  }, [state, locale, t])
+  }, [state, locale])
 
   const label =
     state === 'listening'

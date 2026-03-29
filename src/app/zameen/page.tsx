@@ -1,5 +1,6 @@
 'use client'
 
+import { MarkdownText } from '@/components/MarkdownText'
 import { analyzeCropImage } from '@/lib/vision'
 import { explainCropAdvice } from '@/lib/llm'
 import { useI18n } from '@/lib/i18n/context'
@@ -155,8 +156,12 @@ export default function ZameenPage() {
                 <p className="font-label text-[10px] uppercase tracking-[0.2em] text-[var(--color-secondary)] mb-4">
                   AI Analysis Result
                 </p>
-                <div className="font-body text-base text-[var(--color-on-surface)] leading-relaxed whitespace-pre-wrap">
-                  {result}
+                <div className="font-body text-base text-[var(--color-on-surface)] leading-relaxed">
+                  {result.split('\n').map((line, i) => (
+                    <p key={i} className={line.trim() === '' ? 'h-4' : 'mb-2'}>
+                      <MarkdownText text={line} />
+                    </p>
+                  ))}
                 </div>
                 {mandiInfo && (
                   <div className="mt-6 pt-4 border-t border-[var(--color-outline-variant)]">

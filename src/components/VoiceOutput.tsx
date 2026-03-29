@@ -1,5 +1,6 @@
 'use client'
 
+import { MarkdownText } from '@/components/MarkdownText'
 import { useI18n } from '@/lib/i18n/context'
 import { speakForLocale, stopSpeaking } from '@/lib/tts'
 
@@ -20,9 +21,13 @@ export function VoiceOutput({ text, label }: Props) {
         {heading}
       </p>
 
-      <p className="text-[1.05rem] leading-[1.7] text-[var(--color-on-surface)]" style={{ animation: 'typeReveal 0.6s ease-out' }}>
-        {text}
-      </p>
+      <div className="text-[1.05rem] leading-[1.7] text-[var(--color-on-surface)]" style={{ animation: 'typeReveal 0.6s ease-out' }}>
+        {text.split('\n').map((line, i) => (
+          <p key={i} className={line.trim() === '' ? 'h-4' : 'mb-2'}>
+            <MarkdownText text={line} />
+          </p>
+        ))}
+      </div>
 
       <div className="mt-5 flex flex-wrap gap-3">
         <button

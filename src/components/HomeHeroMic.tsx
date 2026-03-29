@@ -82,7 +82,7 @@ export function HomeHeroMic() {
       setError('Microphone access denied.')
       setState('idle')
     }
-  }, [state, locale, t])
+  }, [state, locale])
 
   const label =
     state === 'listening'

@@ -1,5 +1,6 @@
 'use client'
 
+import { MarkdownText } from '@/components/MarkdownText'
 import { analyzeCropImage } from '@/lib/vision'
 import { explainCropAdvice } from '@/lib/llm'
 import { useI18n } from '@/lib/i18n/context'

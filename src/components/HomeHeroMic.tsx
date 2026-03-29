@@ -74,7 +74,7 @@ export function HomeHeroMic() {
       setState('idle')
     }
     rec.onend = () => {
-      if (state === 'listening') setState('idle')
+      setState((s) => (s === 'listening' ? 'idle' : s))
     }
     try {
       rec.start()

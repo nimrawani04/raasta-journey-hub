@@ -7,9 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
-    "convex:dev": "convex dev",
-    "convex:deploy": "convex deploy"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@ai-sdk/react": "^3.0.0",

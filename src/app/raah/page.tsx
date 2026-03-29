@@ -1,5 +1,6 @@
 'use client'
 
+import { MarkdownText } from '@/components/MarkdownText'
 import { MicButton } from '@/components/MicButton'
 import { useI18n } from '@/lib/i18n/context'
 import { answerVoiceQuestion } from '@/lib/llm'
@@ -411,7 +412,11 @@ export default function RaahPage() {
               <div className="h-full min-h-[400px]">
                 {answer ? (
                   <div className="font-body text-lg text-[var(--color-on-surface)] leading-relaxed italic border-l-4 border-[var(--color-primary)] pl-6 py-2">
-                    {answer}
+                    {answer.split('\n').map((line, i) => (
+                      <p key={i} className={line.trim() === '' ? 'h-4' : 'mb-2'}>
+                        <MarkdownText text={line} />
+                      </p>
+                    ))}
                   </div>
                 ) : (
                   <div className="h-full flex items-center justify-center opacity-40 font-headline text-2xl italic text-[var(--color-outline)]">

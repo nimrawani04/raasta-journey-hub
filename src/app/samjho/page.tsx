@@ -1,5 +1,6 @@
 'use client'
 
+import { MarkdownText } from '@/components/MarkdownText'
 import { extractTextFromImage } from '@/lib/ocr'
 import { explainDocumentSimpleUrdu } from '@/lib/llm'
 import { useI18n } from '@/lib/i18n/context'
@@ -212,9 +213,13 @@ export default function SamjhoPage() {
                   <div className="relative pl-8 py-2">
                     <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-[var(--color-secondary)]"></div>
                     <h4 className="font-headline text-2xl text-[var(--color-primary)] mb-4 italic">Simple Explanation</h4>
-                    <p className="font-body text-base text-[var(--color-on-surface-variant)] leading-relaxed whitespace-pre-wrap">
-                      {explanation}
-                    </p>
+                    <div className="font-body text-base text-[var(--color-on-surface-variant)] leading-relaxed whitespace-pre-wrap">
+                      {explanation.split('\n').map((line, i) => (
+                        <p key={i} className={line.trim() === '' ? 'h-4' : 'mb-2'}>
+                          <MarkdownText text={line} />
+                        </p>
+                      ))}
+                    </div>
                   </div>
 
                   {/* Extracted Text */}

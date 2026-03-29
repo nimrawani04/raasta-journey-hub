@@ -42,7 +42,10 @@ export function HomeHero() {
 
           {/* Primary Hero Mic Button */}
           <div className="relative group cursor-pointer mt-8">
-            <button className="w-28 h-28 md:w-32 md:h-32 bg-[var(--color-primary-container)] text-white flex items-center justify-center mic-pulse relative z-10 hover:opacity-90 transition-opacity rounded-full shadow-2xl">
+            <button
+              onClick={() => router.push('/raah')}
+              className="w-28 h-28 md:w-32 md:h-32 bg-[var(--color-primary-container)] text-white flex items-center justify-center mic-pulse relative z-10 hover:opacity-90 transition-opacity rounded-full shadow-2xl"
+            >
               <span
                 className="material-symbols-outlined text-4xl"
                 style={{ fontVariationSettings: "'FILL' 1" }}

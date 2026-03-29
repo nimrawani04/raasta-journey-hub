@@ -6,6 +6,7 @@ import { HeroScrollAnimation } from '@/components/HeroScrollAnimation'
 
 export function HomeHero() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
 
   return (
     <section ref={containerRef} className="relative w-full h-[250vh]">

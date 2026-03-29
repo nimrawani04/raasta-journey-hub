@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { HeroScrollAnimation } from '@/components/HeroScrollAnimation'
 
 export function HomeHero() {

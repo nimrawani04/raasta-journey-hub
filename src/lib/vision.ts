@@ -1,8 +1,6 @@
 /**
- * Crop / disease vision analysis using AI via Supabase Edge Function.
+ * Crop / disease vision analysis — calls Next.js API route which proxies to the edge function.
  */
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
-const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
 
 export type CropAnalysis = {
   summary: string
@@ -14,20 +12,12 @@ export async function analyzeCropImage(photo: File): Promise<CropAnalysis> {
     const form = new FormData()
     form.append('file', photo)
 
-    const res = await fetch(`${SUPABASE_URL}/functions/v1/ai-vision`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-      },
-      body: form,
-    })
-
+    const res = await fetch('/api/vision', { method: 'POST', body: form })
     if (!res.ok) throw new Error('Vision analysis failed')
 
     const data = (await res.json()) as {
       summary?: string
       mandiHint?: string
-      demo?: boolean
     }
 
     return {

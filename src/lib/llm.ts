@@ -1,15 +1,9 @@
 import type { UiLocale } from '@/lib/localeForLlm'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
-const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
-
 async function postChat(body: Record<string, string>): Promise<string> {
-  const res = await fetch(`${SUPABASE_URL}/functions/v1/ai-chat`, {
+  const res = await fetch('/api/llm', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${SUPABASE_KEY}`,
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
   if (res.status === 429) throw new Error('Rate limited — please try again shortly.')
@@ -26,8 +20,7 @@ export async function explainDocumentSimpleUrdu(
   return postChat({
     mode: 'samjho',
     locale,
-    system: 'You are Samjho, powered by HAQQ. Explain government or legal documents in simple language for people with low literacy. Short paragraphs, warm and clear. Include deadlines and next steps.',
-    prompt: `Document text:\n${ocrText}\n\nExplain what this means and what the reader should do.`,
+    ocrText,
   })
 }
 
@@ -39,8 +32,8 @@ export async function explainCropAdvice(
   return postChat({
     mode: 'zameen',
     locale,
-    system: 'You are Zameen, powered by WADI. Give practical crop and disease advice. Mention treatment timing and mandi (market) price when data is provided. Keep it voice-friendly.',
-    prompt: `Vision summary: ${visionSummary}\nMarket note: ${mandiHint}`,
+    visionSummary,
+    mandiHint,
   })
 }
 
@@ -51,7 +44,6 @@ export async function answerVoiceQuestion(
   return postChat({
     mode: 'raah',
     locale,
-    system: 'You are Raah, the voice layer of RAASTA. Help people in Kashmir and rural India with government schemes, farming, documents, jobs, and education (Taleem). Be concise. No long bullet lists unless asked.',
-    prompt: question,
+    question,
   })
 }

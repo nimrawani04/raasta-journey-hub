@@ -12,14 +12,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { mode, system, prompt, locale } = body;
-
-    if (!system || !prompt) {
-      return new Response(JSON.stringify({ error: "system and prompt are required" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    const { mode, locale } = body;
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -29,14 +22,37 @@ serve(async (req) => {
       });
     }
 
-    // Append locale instruction
-    let fullSystem = system;
-    if (locale === "hi") {
-      fullSystem += "\n\nOUTPUT LANGUAGE: Respond entirely in Hindi using Devanagari script. Keep sentences short and clear for text-to-speech.";
-    } else if (locale === "ks") {
-      fullSystem += "\n\nOUTPUT LANGUAGE: Respond entirely in Kashmiri using Arabic (Perso-Arabic) script. Keep sentences short and clear for text-to-speech.";
+    // Build system + user prompts based on mode
+    let system = "";
+    let user = "";
+
+    if (mode === "samjho" && body.ocrText) {
+      system = "You are Samjho, powered by HAQQ. Explain government or legal documents in simple language for people with low literacy. Short paragraphs, warm and clear. Include deadlines and next steps.";
+      user = `Document text:\n${body.ocrText}\n\nExplain what this means and what the reader should do.`;
+    } else if (mode === "zameen" && body.visionSummary) {
+      system = "You are Zameen, powered by WADI. Give practical crop and disease advice. Mention treatment timing and mandi (market) price when data is provided. Keep it voice-friendly.";
+      user = `Vision summary: ${body.visionSummary}\nMarket note: ${body.mandiHint ?? ""}`;
+    } else if (mode === "raah" && body.question) {
+      system = "You are Raah, the voice layer of RAASTA. Help people in Kashmir and rural India with government schemes, farming, documents, jobs, and education (Taleem). Be concise. No long bullet lists unless asked.";
+      user = body.question;
+    } else if (body.system && body.prompt) {
+      // Fallback: accept raw system/prompt
+      system = body.system;
+      user = body.prompt;
     } else {
-      fullSystem += "\n\nOUTPUT LANGUAGE: Respond entirely in clear, simple English. Keep sentences short for text-to-speech.";
+      return new Response(JSON.stringify({ error: "Invalid payload" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Append locale instruction
+    if (locale === "hi") {
+      system += "\n\nOUTPUT LANGUAGE: Respond entirely in Hindi using Devanagari script. Keep sentences short and clear for text-to-speech.";
+    } else if (locale === "ks") {
+      system += "\n\nOUTPUT LANGUAGE: Respond entirely in Kashmiri using Arabic (Perso-Arabic) script. Keep sentences short and clear for text-to-speech.";
+    } else {
+      system += "\n\nOUTPUT LANGUAGE: Respond entirely in clear, simple English. Keep sentences short for text-to-speech.";
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -48,8 +64,8 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
-          { role: "system", content: fullSystem },
-          { role: "user", content: prompt },
+          { role: "system", content: system },
+          { role: "user", content: user },
         ],
         temperature: 0.4,
       }),
